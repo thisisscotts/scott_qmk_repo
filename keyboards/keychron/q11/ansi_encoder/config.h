@@ -27,5 +27,5 @@
 #define COMBO_ONLY_FROM_LAYER 0     // combo keys are always checked from layer 0, even if other layers are active.
 
 /* Split functions */
-#define SPLIT_TRANSPORT_MIRROR
+//#define SPLIT_TRANSPORT_MIRROR
 #define SPLIT_LAYER_STATE_ENABLE
