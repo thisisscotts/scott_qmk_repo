@@ -218,7 +218,7 @@ bool dip_switch_update_user(uint8_t index, bool active) {
 
 // Display custom RGB colours per layer if the custom mode is selected
 bool rgb_matrix_indicators_user(void) {
-    if (custom_layer_rgb == true) {
+    // if (custom_layer_rgb == true) {
         switch (get_highest_layer(layer_state)) {
             case LAYER_00:
                 rgb_matrix_set_color_all(0,255,255); // Cyan
@@ -235,6 +235,6 @@ bool rgb_matrix_indicators_user(void) {
             default:
                 break;
         }
-    }
+    // }
     return true;
 }
