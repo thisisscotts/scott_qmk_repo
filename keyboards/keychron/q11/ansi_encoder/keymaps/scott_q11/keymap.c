@@ -122,7 +122,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,  _______,  _______,  _______,  _______,            _______,                       _______,            _______,  _______,    _______,  _______,  TO(1),    _______),
 
     [LAYER_03] = LAYOUT_91_ansi(
-        RGB_TOG,  _______,  KC_BRID,  KC_BRIU,  _______,  _______,  RGB_VAD,   RGB_VAI,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,    KC_VOLU,  _______,  _______,  RGB_TOG,
+        RGB_TOG,  _______,  KC_BRID,  KC_BRIU,  _______,  _______,  _______,   _______,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,    KC_VOLU,  _______,  _______,  RGB_TOG,
         _______,  _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
         _______,  RGB_TOG,  RGB_MOD,  RGB_VAI,  RGB_HUI,  RGB_SAI,  RGB_SPI,   _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
         _______,  _______,  RGB_RMOD, RGB_VAD,  RGB_HUD,  RGB_SAD,  RGB_SPD,   _______,  _______,  _______,  _______,  _______,  _______,              _______,            _______,
@@ -209,15 +209,49 @@ bool rgb_matrix_indicators_user(void) {
             case LAYER_00:
                 rgb_matrix_set_color_all(0,255,255); // Cyan
                 break;
+
             case LAYER_01:
                 rgb_matrix_set_color_all(255,128,0); // Orange
+                if (is_keyboard_master()) {
+                    rgb_matrix_set_color(19,0,255,0);
+                    rgb_matrix_set_color(25,0,255,0);
+                    rgb_matrix_set_color(26,0,255,0);
+                    rgb_matrix_set_color(27,0,255,0);
+                } else {
+                    rgb_matrix_set_color(59,0,255,0);
+                    rgb_matrix_set_color(60,0,255,0);
+                    rgb_matrix_set_color(61,0,255,0);
+                    rgb_matrix_set_color(68,0,255,0);
+                    rgb_matrix_set_color(69,0,255,0);
+                    rgb_matrix_set_color(70,0,255,0);
+                    rgb_matrix_set_color(76,0,255,0);
+                    rgb_matrix_set_color(77,0,255,0);
+                    rgb_matrix_set_color(78,0,255,0);
+                    rgb_matrix_set_color(82,0,255,0);
+                    rgb_matrix_set_color(83,0,255,0);
+                }
                 break;
+
             case LAYER_02:
                 rgb_matrix_set_color_all(0,255,0); // Green
                 break;
+
             case LAYER_03:
                 rgb_matrix_set_color_all(255,0,255); // Magenta
+                for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+                    for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+                        uint8_t index = g_led_config.matrix_co[row][col];
+                        uint8_t led_min = 0;
+                        uint8_t led_max = 88;
+
+                        if (index >= led_min && index < led_max && index != NO_LED &&
+                        keymap_key_to_keycode(LAYER_03, (keypos_t){col,row}) > KC_TRNS) {
+                            rgb_matrix_set_color(index, RGB_CYAN);
+                        }
+                    }
+                }
                 break;
+
             default:
                 break;
         }
