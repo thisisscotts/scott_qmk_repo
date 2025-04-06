@@ -14,22 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
+#include "config.h"
 
-
-
-/**********************************************************************************************************
- *                                              Debugging
- **********************************************************************************************************/
-
-//#include "print.h"
-
-// void keyboard_post_init_user(void) {
-//   Customise these values to desired behaviour
-//   debug_enable=true;
-//   debug_matrix=true;
-//   debug_keyboard=true;
-//   debug_mouse=true;
-// }
 
 /**********************************************************************************************************
  *                                              Combos
@@ -205,10 +191,10 @@ bool dip_switch_update_user(uint8_t index, bool active) {
     switch (index) {
         case 0:
             if(active) {
-                //print("Dip switch active");
+                dprint("Dip switch active\n");
                 custom_layer_rgb = true;
             } else {
-                //print("Dip switch not active");
+                dprint("Dip switch not active\n");
                 custom_layer_rgb = false;
             }
             break;
@@ -218,7 +204,7 @@ bool dip_switch_update_user(uint8_t index, bool active) {
 
 // Display custom RGB colours per layer if the custom mode is selected
 bool rgb_matrix_indicators_user(void) {
-    // if (custom_layer_rgb == true) {
+    if (custom_layer_rgb == true) {
         switch (get_highest_layer(layer_state)) {
             case LAYER_00:
                 rgb_matrix_set_color_all(0,255,255); // Cyan
@@ -235,6 +221,60 @@ bool rgb_matrix_indicators_user(void) {
             default:
                 break;
         }
-    // }
+    }
     return true;
+}
+
+
+/**********************************************************************************************************
+ *                                              Sync
+ **********************************************************************************************************/
+#include <transactions.h>
+
+typedef struct _master_to_slave_t {
+    bool m2s_data;
+} master_to_slave_t;
+
+typedef struct _slave_to_master_t {
+    bool s2m_data;
+} slave_to_master_t;
+
+void user_sync_a_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
+    const master_to_slave_t *m2s = (const master_to_slave_t*)in_data;
+    slave_to_master_t *s2m = (slave_to_master_t*)out_data;
+    s2m->s2m_data = m2s->m2s_data; // update to match master data
+    custom_layer_rgb = s2m->s2m_data;
+}
+
+void housekeeping_task_user(void) {
+    if (is_keyboard_master()) {
+        static uint32_t last_sync = 0;
+
+        // Interact with slave every X ms
+        if (timer_elapsed32(last_sync) > 500) {
+            master_to_slave_t m2s = {custom_layer_rgb};
+            slave_to_master_t s2m = {false};
+            if(transaction_rpc_exec(USER_SYNC_A, sizeof(m2s), &m2s, sizeof(s2m), &s2m)) {
+                last_sync = timer_read32();
+                dprintf("Timer check B: %ld\tSlave value: %d\n", last_sync, s2m.s2m_data);
+            } else {
+                dprint("Slave sync failed!\n");
+            }
+        }
+    }
+}
+
+/**********************************************************************************************************
+ *                                              Debugging
+ **********************************************************************************************************/
+
+void keyboard_post_init_user(void) {
+    //   Customise these values to desired behaviour
+    // debug_enable=true;
+    //   debug_matrix=true;
+    //   debug_keyboard=true;
+    //   debug_mouse=true;
+
+    // Sync data between master and slave
+    transaction_register_rpc(USER_SYNC_A, user_sync_a_slave_handler);
 }
