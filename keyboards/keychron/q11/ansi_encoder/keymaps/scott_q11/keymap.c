@@ -24,10 +24,10 @@
 // define combo names
 enum combos {
     COMBO_HOME,
-    COMBO_PGUP,
+    COMBO_REFRESH,
     COMBO_DELETE,
     COMBO_END_KEY, // "COMBO_END" is already used in QMK source elsewhere
-    COMBO_PGDN,
+    COMBO_RENAME,
     COMBO_BSPC,
     COMBO_LYR0,
     COMBO_LYR1,
@@ -60,11 +60,11 @@ combo_t key_combos[] = {
     // Left hand
     [COMBO_DELETE]  = COMBO(fd_combo, KC_DELETE),
     [COMBO_HOME]    = COMBO(ds_combo, KC_HOME),
-    [COMBO_PGUP]    = COMBO(re_combo, KC_F5),
+    [COMBO_REFRESH]    = COMBO(re_combo, KC_F5),
     // Right hand
     [COMBO_BSPC]    = COMBO(jk_combo, KC_BSPC),
     [COMBO_END_KEY] = COMBO(kl_combo, KC_END),
-    [COMBO_PGDN]    = COMBO(ui_combo, KC_F2),
+    [COMBO_RENAME]    = COMBO(ui_combo, KC_F2),
     // Layers
     [COMBO_LYR0]    = COMBO(fj_combo, TO(0)),
     [COMBO_LYR1]    = COMBO(dk_combo, TO(1)),
@@ -231,6 +231,7 @@ bool rgb_matrix_indicators_user(void) {
  **********************************************************************************************************/
 #include <transactions.h>
 
+// Package up send/receive data in structs
 typedef struct _master_to_slave_t {
     bool m2s_data;
 } master_to_slave_t;
@@ -239,10 +240,13 @@ typedef struct _slave_to_master_t {
     bool s2m_data;
 } slave_to_master_t;
 
+// This function is called by the slave only.
 void user_sync_a_slave_handler(uint8_t in_buflen, const void* in_data, uint8_t out_buflen, void* out_data) {
     const master_to_slave_t *m2s = (const master_to_slave_t*)in_data;
     slave_to_master_t *s2m = (slave_to_master_t*)out_data;
     s2m->s2m_data = m2s->m2s_data; // update to match master data
+
+    // Any variables being used by the master need to be updated for mirror functionality
     custom_layer_rgb = s2m->s2m_data;
 }
 
@@ -270,7 +274,7 @@ void housekeeping_task_user(void) {
 
 void keyboard_post_init_user(void) {
     //   Customise these values to desired behaviour
-    // debug_enable=true;
+    //   debug_enable=true;
     //   debug_matrix=true;
     //   debug_keyboard=true;
     //   debug_mouse=true;
