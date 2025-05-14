@@ -1,6 +1,12 @@
 /*
+<<<<<<< HEAD:lib/chibios-contrib/os/common/startup/ARMCMx/compilers/GCC/ld/HT32F52342_ANNEPRO2_C15.ld
  * Copyright (C) Yaotian Feng, http://github.com/Codetector1374
  * codetector@codetector.cn
+=======
+ * Copyright (c) 2013-2016 Fabio UJonathan A. Kollaschtzig, http://fabioutzig.com
+ *           (c) 2020 Yaotian Feng (Codetector) <codetector@codetector.cn>
+ *           (c) 2025 Michał Kopeć <michal@nozomi.space>
+>>>>>>> 59c361259070ac3f5141b8ca9cb43f5b3315143b:keyboards/annepro2/ld/HT32F52342_ANNEPRO2_C15.ld
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the "Software"),
@@ -21,6 +27,7 @@
  * SOFTWARE.
  */
 
+<<<<<<< HEAD:lib/chibios-contrib/os/common/startup/ARMCMx/compilers/GCC/ld/HT32F52342_ANNEPRO2_C15.ld
 
 /*
  * HT32F1655 memory setup
@@ -43,6 +50,28 @@ MEMORY {
     ram5    : org = 0x00000000, len = 0
     ram6    : org = 0x00000000, len = 0
     ram7    : org = 0x00000000, len = 0
+=======
+/*
+ * HT32F52342 w/ Anne Pro 2 bootloader memory setup.
+ */
+MEMORY {
+    flash0   : org = 0x00004000, len = 64k - 16k       /* firmware */
+    flash1   : org = 0x00000000, len = 0
+    flash2   : org = 0x00000000, len = 0
+    flash3   : org = 0x00000000, len = 0
+    flash4   : org = 0x00000000, len = 0
+    flash5   : org = 0x00000000, len = 0
+    flash6   : org = 0x00000000, len = 0
+    flash7   : org = 0x00000000, len = 0
+    ram0     : org = 0x20000000, len = 16k             /* RAM */
+    ram1     : org = 0x00000000, len = 0
+    ram2     : org = 0x00000000, len = 0
+    ram3     : org = 0x00000000, len = 0
+    ram4     : org = 0x00000000, len = 0
+    ram5     : org = 0x00000000, len = 0
+    ram6     : org = 0x00000000, len = 0
+    ram7     : org = 0x00000000, len = 0
+>>>>>>> 59c361259070ac3f5141b8ca9cb43f5b3315143b:keyboards/annepro2/ld/HT32F52342_ANNEPRO2_C15.ld
 }
 
 /* For each data/text section two region are defined, a virtual region
