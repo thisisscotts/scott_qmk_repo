@@ -26,9 +26,12 @@ enum combos {
     COMBO_HOME,
     COMBO_REFRESH,
     COMBO_DELETE,
+    COMBO_MINUS,
+    COMBO_LBRC,
+    COMBO_EQL,
     COMBO_END_KEY, // "COMBO_END" is already used in QMK source elsewhere
-    COMBO_RENAME,
-    COMBO_BSPC,
+    COMBO_PLUS,
+    COMBO_RBRC,
     COMBO_LYR0,
     COMBO_LYR1,
     COMBO_LYR2,
@@ -43,12 +46,17 @@ uint16_t COMBO_LEN = COMBO_LENGTH; // nifty trick continued
 
 // Left hand
 const uint16_t PROGMEM fd_combo[] = {KC_F, KC_D, COMBO_END};
+const uint16_t PROGMEM ew_combo[] = {KC_E, KC_W, COMBO_END};
 const uint16_t PROGMEM ds_combo[] = {KC_D, KC_S, COMBO_END};
-const uint16_t PROGMEM re_combo[] = {KC_R, KC_E, COMBO_END};
+const uint16_t PROGMEM vc_combo[] = {KC_V, KC_C, COMBO_END};
+const uint16_t PROGMEM cx_combo[] = {KC_C, KC_X, COMBO_END};
+//const uint16_t PROGMEM xz_combo[] = {KC_X, KC_Z, COMBO_END};
 // Right hand
 const uint16_t PROGMEM jk_combo[] = {KC_J, KC_K, COMBO_END};
 const uint16_t PROGMEM kl_combo[] = {KC_K, KC_L, COMBO_END};
-const uint16_t PROGMEM ui_combo[] = {KC_U, KC_I, COMBO_END};
+const uint16_t PROGMEM mcomm_combo[] = {KC_M, KC_COMM, COMBO_END};
+const uint16_t PROGMEM commdot_combo[] = {KC_COMM, KC_DOT, COMBO_END};
+//const uint16_t PROGMEM dotslsh_combo[] = {KC_DOT, KC_SLSH, COMBO_END};
 // Layers
 const uint16_t PROGMEM fj_combo[] = {KC_F, KC_J, COMBO_END};
 const uint16_t PROGMEM dk_combo[] = {KC_D, KC_K, COMBO_END};
@@ -60,11 +68,14 @@ combo_t key_combos[] = {
     // Left hand
     [COMBO_DELETE]  = COMBO(fd_combo, KC_DELETE),
     [COMBO_HOME]    = COMBO(ds_combo, KC_HOME),
-    [COMBO_REFRESH]    = COMBO(re_combo, KC_F5),
+    [COMBO_REFRESH] = COMBO(ew_combo, KC_F5),
+    [COMBO_MINUS]   = COMBO(vc_combo, KC_MINS),
+    [COMBO_LBRC]    = COMBO(cx_combo, KC_LBRC),
     // Right hand
-    [COMBO_BSPC]    = COMBO(jk_combo, KC_BSPC),
+    [COMBO_EQL]     = COMBO(jk_combo, KC_EQL),
     [COMBO_END_KEY] = COMBO(kl_combo, KC_END),
-    [COMBO_RENAME]    = COMBO(ui_combo, KC_F2),
+    [COMBO_PLUS]    = COMBO(mcomm_combo, KC_PPLS),
+    [COMBO_RBRC]    = COMBO(commdot_combo, KC_RBRC),
     // Layers
     [COMBO_LYR0]    = COMBO(fj_combo, TO(0)),
     [COMBO_LYR1]    = COMBO(dk_combo, TO(1)),
@@ -122,10 +133,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,  _______,  _______,  _______,  _______,            _______,                       _______,            _______,  _______,    _______,  _______,  TO(1),    _______),
 
     [LAYER_03] = LAYOUT_91_ansi(
-        RGB_TOG,  _______,  KC_BRID,  KC_BRIU,  _______,  _______,  _______,   _______,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,    KC_VOLU,  _______,  _______,  RGB_TOG,
+        RM_TOGG,  _______,  KC_BRID,  KC_BRIU,  _______,  _______,  _______,   _______,  KC_MPRV,  KC_MPLY,  KC_MNXT,  KC_MUTE,  KC_VOLD,    KC_VOLU,  _______,  _______,  RM_TOGG,
         _______,  _______,  _______,  _______,  _______,  _______,  _______,   _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
-        _______,  RGB_TOG,  RGB_MOD,  RGB_VAI,  RGB_HUI,  RGB_SAI,  RGB_SPI,   _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
-        _______,  _______,  RGB_RMOD, RGB_VAD,  RGB_HUD,  RGB_SAD,  RGB_SPD,   _______,  _______,  _______,  _______,  _______,  _______,              _______,            _______,
+        _______,  RM_TOGG,  RM_NEXT,  RM_VALU,  RM_HUEU,  RM_SATU,  RM_SPDU,   _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
+        _______,  _______,  RM_PREV,  RM_VALD,  RM_HUED,  RM_SATD,  RM_SPDD,   _______,  _______,  _______,  _______,  _______,  _______,              _______,            _______,
         _______,  _______,            _______,  _______,  _______,  _______,   _______,  NK_TOGG,  _______,  _______,  _______,  _______,              _______,  TO(0),
         _______,  _______,  _______,  _______,  _______,            _______,                       _______,            _______,  _______,    _______,  _______,  TO(2),    _______)
 };
@@ -140,7 +151,7 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     [LAYER_00] = { ENCODER_CCW_CW(KC_MPRV, KC_MNXT), ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
     [LAYER_01] = { ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______) },
     [LAYER_02] = { ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______) },
-    [LAYER_03] = { ENCODER_CCW_CW(RGB_MOD, RGB_RMOD), ENCODER_CCW_CW(RGB_MOD, RGB_RMOD) }
+    [LAYER_03] = { ENCODER_CCW_CW(RM_NEXT, RM_PREV), ENCODER_CCW_CW(RM_NEXT, RM_PREV) }
 };
 #endif // ENCODER_MAP_ENABLE
 
